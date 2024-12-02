@@ -20,10 +20,6 @@ void I2C::InitI2C()
     this->Send(0x00); // Wake up
     this->StopI2C_Trans();
 
-    this->StartI2C_Trans(0x68);
-    this->Send(0x1C); // Accelerometer config
-    this->Send(0x00); // ±2g range
-    this->StopI2C_Trans();
 }
 
 void I2C::StartI2C_Trans(unsigned char SLA)
@@ -58,10 +54,7 @@ void I2C::Send(unsigned char data)
     }
 }
 
-unsigned char I2C::Read_data()
-{
-    return TWDR; // Return the received data
-}
+
 
 unsigned char I2C::Read_from(unsigned char SLA, unsigned char MEMADDRESS){
  // this function sets up reading from SLA at the SLA MEMADDRESS
