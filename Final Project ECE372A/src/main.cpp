@@ -14,5 +14,9 @@ void loop() {
 
 // put function definitions here:
 int myFunction(int x, int y) {
+<<<<<<< Updated upstream
   return y+x; //test
+=======
+  return x + y; //sebastian
+>>>>>>> Stashed changes
 }
