@@ -2,9 +2,12 @@
 #define ADC_H
 
 #include <avr/io.h>
-
-// Function declarations
-void initADC0();
-unsigned int readADC();
+class _ADC
+{
+public:
+    // Function declarations
+    void initADC0();
+    unsigned int readADC();
+};
 
 #endif // ADC_H

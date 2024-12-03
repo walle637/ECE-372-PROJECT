@@ -8,6 +8,7 @@
 #define LCD_H
 
 #include <avr/io.h>
+#include "timer.h"
 class LCD
 {
 public:

@@ -2,7 +2,7 @@
 #include "ADC.h"
 #include <avr/io.h>
 
-void initADC0(){
+void _ADC::initADC0(){
 
   // 1. ADC MUX register set reference voltage set to AVCC = 5V output. 
   ADMUX |= (1 << REFS0);
@@ -39,7 +39,7 @@ void initADC0(){
   // 9. start the first ADC conversion
   ADCSRA |= ( 1 << ADSC);
 }
-unsigned int readADC() {
+unsigned int _ADC::readADC() {
 
     // Read ADCL first, then ADCH
     unsigned int adcResult = ADCL;//lowest 8 bits

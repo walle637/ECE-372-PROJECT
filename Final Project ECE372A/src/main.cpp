@@ -1,9 +1,15 @@
 #include <Arduino.h>
 #include "I2C.h"
+#include "timer.h"
+#include "adc.h"
+#include "lcd.h"
 #include <avr/io.h>
 #include <Wire.h>
 
 I2C i2c;
+Timer timer;
+_ADC adc;
+LCD lcd;
 
 uint8_t readOneRegister(unsigned char SLA, unsigned char regAddr)
 {
@@ -22,6 +28,7 @@ byte bcdToDec(byte val) {
 // put function definitions here:
 int main() {
   i2c.InitI2C();
+  lcd.initLCD();
   
   while(1) {
   uint8_t sec = readOneRegister(0x68,0x00); //second
@@ -37,6 +44,18 @@ int main() {
   mo_nth = bcdToDec(mo_nth);
   yr = bcdToDec(yr);
   d_ay = bcdToDec(d_ay);
+
+  char stringHr[4];
+  sprintf(stringHr, "%02d", hr);
+  char stringMin[4];
+  sprintf(stringMin, "%02d", min);
+  char stringDay[4];
+  sprintf(stringDay, "%02d", d_ay);
+  char stringMonth[4];
+  sprintf(stringMonth, "%02d", mo_nth);
+  char stringYr[4];
+  sprintf(stringYr, "%02d", yr);
+
   
   Serial.begin(9600);
   
@@ -54,6 +73,8 @@ int main() {
   Serial.print("/20");
   Serial.println(yr);
 
+  lcd.moveCursor(0,0);
+  lcd.writeString(stringHr);
 
 
   //Serial.print(":");
@@ -63,56 +84,3 @@ int main() {
   }
   return 0;
 }
-
-
-/////////////////////////////////////////////////////////////////////////
-/*
-#include <Wire.h>
-#include <Arduino.h>
-#include "I2C.h"
-#include <avr/io.h>
-#include <Wire.h>
-#define DS1307_ADDRESS 0x68
-
-int decToBcd(int val) {
-  return ((val / 10 * 16) + (val % 10));
-}
-
-void setDS1307Time(int seconds, int minutes, int hours, int dayOfWeek, int day, int month, int year) {
-  Wire.beginTransmission(DS1307_ADDRESS);
-  Wire.write(0x00); // Set register pointer to 0x00 (seconds register)
-
-  Wire.write(decToBcd(seconds));     // Seconds (bit 7 is CH, set to 0 to enable oscillator)
-  Wire.write(decToBcd(minutes));     // Minutes
-  Wire.write(decToBcd(hours));       // Hours (24-hour format)
-  Wire.write(decToBcd(dayOfWeek));   // Day of the week
-  Wire.write(decToBcd(day));         // Day of the month
-  Wire.write(decToBcd(month));       // Month
-  Wire.write(decToBcd(year));        // Year
-
-  Wire.endTransmission();
-}
-void setup() {
-  Wire.begin();
-  Serial.begin(9600);
-
-  // Set the current time and date
-  // Replace these with the current time and date
-  int seconds = 0;    // 0-59
-  int minutes = 36;   // 0-59
-  int hours = 9;     // 0-23 (24-hour format)
-  int dayOfWeek = 3;  // 1=Sunday, 2=Monday, ..., 7=Saturday
-  int day = 3;        // Day of the month (1-31)
-  int month = 12;     // Month (1-12)
-  int year = 24;      // Last two digits of the year (e.g., 24 for 2024)
-
-  setDS1307Time(seconds, minutes, hours, dayOfWeek, day, month, year);
-
-  Serial.println("Time and date have been set on the DS1307.");
-}
-
-void loop() {
-  // Nothing to do here
-}
-
-*/
