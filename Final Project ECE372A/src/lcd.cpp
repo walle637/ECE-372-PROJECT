@@ -10,7 +10,7 @@
 /*
  * Initializes all pins related to the LCD to be outputs
  */
-void initLCDPins(){
+void LCD::initLCDPins(){
   DDRB |= ((1 << DDB6) | (1 << DDB4));
 
   DDRA |= ((1 << DDA0) | (1 << DDA1) | (1 << DDA2) | (1 << DDA3));
@@ -24,7 +24,7 @@ void initLCDPins(){
  *  3. Assert high on enable pin, delay, and asset low on enable pin
  *  4. delay the provided number in MICROseconds.
  */
-void fourBitCommandWithDelay(unsigned char data, unsigned int delay){
+void LCD::fourBitCommandWithDelay(unsigned char data, unsigned int delay){
 
   PORTA = ((PORTA & 0xF0) | (data & 0x0F));
 
@@ -32,11 +32,11 @@ void fourBitCommandWithDelay(unsigned char data, unsigned int delay){
 
   PORTB |= (1 << PORTB4);
 
-  delayUs(1);
+  timerDummy.delayUs(1);
 
   PORTB &= ~(1 << PORTB4);
 
-  delayUs(delay);
+  timerDummy.delayUs(delay);
 }
 
 /* Similar to fourBitCommandWithDelay except that now all eight bits of command are
@@ -50,14 +50,14 @@ void fourBitCommandWithDelay(unsigned char data, unsigned int delay){
  * 5. Assert high on enable pin, delay, and asset low on enable pin
  * 6. delay the provided number in MICROseconds.
  */
-void eightBitCommandWithDelay(unsigned char command, unsigned int delay){
+void LCD::eightBitCommandWithDelay(unsigned char command, unsigned int delay){
   PORTA = ((PORTA & 0xF0) | ((command >> 4) & 0x0F));
 
   PORTB &= ~(1 << PORTB6);
 
   PORTB |= (1 << PORTB4);
 
-  delayUs(1);
+  timerDummy.delayUs(1);
 
   PORTB &= ~(1 << PORTB4);
 
@@ -65,11 +65,11 @@ void eightBitCommandWithDelay(unsigned char command, unsigned int delay){
 
   PORTB |= (1 << PORTB4);
 
-  delayUs(1);
+  timerDummy.delayUs(1);
 
   PORTB &= ~(1 << PORTB4);
 
-  delayUs(delay);
+  timerDummy.delayUs(delay);
 }
 
 /* Similar to eightBitCommandWithDelay except that now RS should be high
@@ -80,14 +80,14 @@ void eightBitCommandWithDelay(unsigned char command, unsigned int delay){
  * 5. Assert high on enable pin, delay, and asset low on enable pin
  * 6. delay is always 46 MICROseconds for a character write
  */
-void writeCharacter(unsigned char character){
+void LCD::writeCharacter(unsigned char character){
   PORTA = ((PORTA & 0xF0) | ((character >> 4) & 0x0F));
 
   PORTB |= (1 << PORTB6);
 
   PORTB |= (1 << PORTB4);
 
-  delayUs(1);
+  timerDummy.delayUs(1);
 
   PORTB &= ~(1 << PORTB4);
 
@@ -95,11 +95,11 @@ void writeCharacter(unsigned char character){
 
   PORTB |= (1 << PORTB4);
 
-  delayUs(1);
+  timerDummy.delayUs(1);
 
   PORTB &= ~(1 << PORTB4);
 
-  delayUs(46);
+  timerDummy.delayUs(46);
 }
 
 /*
@@ -107,7 +107,7 @@ void writeCharacter(unsigned char character){
  * remember that a c string always ends with the '\0' character and
  * that this should just call writeCharacter multiple times.
  */
-void writeString(const char *string){
+void LCD::writeString(const char *string){
   while(*string != '\0') {
     writeCharacter(*string);
     string++;
@@ -118,7 +118,7 @@ void writeString(const char *string){
  * This moves the LCD cursor to a specific place on the screen.
  * This can be done using the eightBitCommandWithDelay with correct arguments
  */
-void moveCursor(unsigned char x, unsigned char y){
+void LCD::moveCursor(unsigned char x, unsigned char y){
 	eightBitCommandWithDelay(((0x80) | (x <<6) | (y)), 46);
 }
 
@@ -126,9 +126,9 @@ void moveCursor(unsigned char x, unsigned char y){
  * This should be the last function you write as it largely depends on all other
  * functions working.
  */
-void initLCDProcedure(){
+void LCD::initLCDProcedure(){
   // Delay 15 milliseconds
-  delayMs(15);
+  timerDummy.delayMs(15);
   // Write 0b0011 to DB[7:4] and delay 4100 microseconds
   fourBitCommandWithDelay(0b0011, 4100);
   // Write 0b0011 to DB[7:4] and delay 100 microseconds
@@ -158,11 +158,11 @@ void initLCDProcedure(){
 * This function is made so that it's possible to test initLCDPins separately
 * from initLCDProcedure which will likely be necessary.
 */
-void initLCD(){
+void LCD::initLCD(){
   initLCDPins();
   initLCDProcedure();
 }
 
-void setCGRAM(unsigned char x) {
+void LCD::setCGRAM(unsigned char x) {
   eightBitCommandWithDelay(x, 46);
 }

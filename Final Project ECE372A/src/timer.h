@@ -11,6 +11,7 @@ public:
     void initTimer0();
     void delayMs(unsigned int delay);
     void delaySec(unsigned int delay);
+    void delayUs(unsigned int delay);
 
 };
 
