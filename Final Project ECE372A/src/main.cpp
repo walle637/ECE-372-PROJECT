@@ -54,7 +54,7 @@ int main() {
   char stringMonth[4];
   sprintf(stringMonth, "%02d", mo_nth);
   char stringYr[4];
-  sprintf(stringYr, "%02d", yr);
+  sprintf(stringYr, "%d", yr);
 
   
   Serial.begin(9600);
@@ -75,8 +75,17 @@ int main() {
 
   lcd.moveCursor(0,0);
   lcd.writeString(stringHr);
-
-
+  lcd.writeString(":");
+  lcd.writeString(stringMin);
+  lcd.writeString(" ");
+  lcd.writeString(stringMonth);
+  lcd.writeString("/");
+  lcd.writeString(stringDay);
+  lcd.writeString("/20");
+  lcd.writeString(stringYr);
+  //lcd.writeString("Simon");
+  lcd.moveCursor(1,0);
+  lcd.writeString("CO2 Level: ");
   //Serial.print(":");
   //Serial.println(min);
   Serial.flush();
