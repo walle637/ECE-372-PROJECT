@@ -43,7 +43,14 @@ int main()
     uint8_t yr = readOneRegister(0x68, 0x06);     // year
     int analog = adc.readADC();
 
-    
+    float R_L = 10000;
+    float R0 = 15500;
+    float m = -1.82;
+    float b = 2.6;
+    float voltage = analog * (5.0/1023.0);
+    float RS = R_L * (5.0 / voltage - 1.0);
+    float ratio = RS/R0;
+    float ppm = pow(10,(m * log10(ratio) + b));
 
     sec = bcdToDec(sec);
     min = bcdToDec(min);
@@ -54,6 +61,10 @@ int main()
     if (hr > 12)
     {
       hr = hr - 12;
+    }
+
+    if (hr == 0){
+      hr = 12;
     }
 
     char stringHr[4];
@@ -68,6 +79,10 @@ int main()
     sprintf(stringYr, "%d", yr);
     char stringAnalog[4];
     sprintf(stringAnalog, "%04d", analog);
+
+    char stringPPM[10];
+    dtostrf(ppm, 6, 2, stringPPM);
+
 
     Serial.begin(9600);
 
@@ -86,7 +101,7 @@ int main()
     Serial.println(yr);
 
     Serial.print("Analog: ");
-    Serial.print(analog);
+    Serial.print(stringPPM);
 
     lcd.moveCursor(0, 0);
     lcd.writeString(stringHr);
@@ -99,8 +114,9 @@ int main()
     lcd.writeString("/20");
     lcd.writeString(stringYr);
     lcd.moveCursor(1, 0);
-    lcd.writeString("CO2 Level: ");
-    lcd.writeString(stringAnalog);
+    lcd.writeString("CO2: ");
+    lcd.writeString(stringPPM);
+    lcd.writeString(" PPM");
     Serial.flush();
   }
   return 0;
