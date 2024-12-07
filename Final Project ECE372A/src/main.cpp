@@ -44,7 +44,7 @@ int main()
     int analog = adc.readADC();
 
     float R_L = 10000;
-    float R0 = 15500;
+    float R0 = 16500;
     float m = -1.82;
     float b = 2.6;
     float voltage = analog * (5.0/1023.0);
