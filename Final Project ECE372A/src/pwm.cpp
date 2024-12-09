@@ -25,7 +25,7 @@ void PWM::SetFrequency(unsigned int frequency)
 {
   // Set the PWM frequency
   OCR4A = 16000000 / frequency; // Calculate TOP value
-  OCR4C = OCR4A / 100;
+  OCR4C = OCR4A / 50;
 }
 
 // Function to play a chirping sound
@@ -33,10 +33,6 @@ void PWM::playChirpAlarm()
 {
   // Define the chirp range and timing
   for (int i = 1000; i < 4000; i++)
-  {
-    this->SetFrequency(i);
-  }
-  for (int i = 4000; i >= 1000; i--)
   {
     this->SetFrequency(i);
   }
